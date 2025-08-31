@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState,useEffect } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import {
   List,
@@ -17,6 +17,8 @@ import EditTodo from "./EditTodo";
 import { TodoContext } from "../contexts/TodoContext";
 export default function TodoList() {
   const [alignment, setAlignment] = useState("all");
+
+  const [filteredTodos, setFilteredTodos] = useState([]);
 
   const handleChange = (e, newAlignment) => {
     setAlignment(newAlignment);
@@ -45,6 +47,16 @@ export default function TodoList() {
   };
 
 
+  useEffect(() => {
+    if (alignment === "all") {
+      setFilteredTodos(todos);
+    } else if (alignment === "completed") {
+      setFilteredTodos(todos.filter((todo) => todo.completed));
+    } else if (alignment === "uncompleted") {
+      setFilteredTodos(todos.filter((todo) => !todo.completed));
+    }
+  }, [alignment, todos]);
+
   return (
     <>
       {/* filter Toggle Button Group */}
@@ -57,7 +69,7 @@ export default function TodoList() {
         className="mb-4"
         size="small"
       >
-        <ToggleButton value="all">All</ToggleButton>
+        <ToggleButton  value="all">All</ToggleButton>
         <ToggleButton value="completed">Completed</ToggleButton>
         <ToggleButton value="uncompleted">Uncompleted</ToggleButton>
       </ToggleButtonGroup>
@@ -67,7 +79,7 @@ export default function TodoList() {
 
       {/* todo List */}
       <List dense sx={{ width: "100%", maxWidth: 500, bgcolor: "background.paper" }}>
-        {todos.map((item) => {
+        {filteredTodos.map((item) => {
           const labelId = `checkbox-list-secondary-label-${item.id}`;
           return (
             <ListItem
