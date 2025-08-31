@@ -36,10 +36,12 @@ export default function TodoList() {
 
   const deleteTodo = (todo) => {
     setTodos(todos.filter((value) => value.id !== todo.id));
+    localStorage.setItem("todos", todos);
   };
 
   const doneTodo = (todo) => {
     setTodos(todos.map((value) => value.id === todo.id ? {...value, completed: !value.completed} : value));  
+    localStorage.setItem("todos", todos);
   };
 
 

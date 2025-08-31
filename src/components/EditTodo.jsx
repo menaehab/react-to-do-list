@@ -30,6 +30,7 @@ export default function EditTodo({ todo, onClose }) {
     setTodos(
       todos.map((t) => (t.id === todo.id ? { ...t, name: editedText } : t))
     );
+    localStorage.setItem("todos", todos);
     onClose();
   };
 

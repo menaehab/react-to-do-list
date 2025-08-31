@@ -7,6 +7,7 @@ export default function AddTodo() {
   const AddTodo = () => {
       if(todo){
         setTodos([...todos, {id:Date.now(),name:todo,completed:false}]);
+        localStorage.setItem("todos", todos);
         setTodo('');
       }
   }
