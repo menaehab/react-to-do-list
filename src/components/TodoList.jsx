@@ -22,7 +22,7 @@ export default function TodoList() {
     setAlignment(newAlignment);
   };
 
-  const { todos, setTodos } = useContext(TodoContext);
+  const { todos, setTodos, showSnackbar } = useContext(TodoContext);
   const [editingTodo, setEditingTodo] = useState(null);
 
   const filteredTodos = useMemo(() => {
@@ -47,7 +47,8 @@ export default function TodoList() {
   const deleteTodo = (todo) => {
     setTodos(todos.filter((value) => value.id !== todo.id));
     localStorage.setItem("todos", JSON.stringify(todos));
-  };
+    showSnackbar('Deleted successfully');
+    };
 
   const doneTodo = (todo) => {
     const updatedTodos = todos.map((value) => 
@@ -55,6 +56,7 @@ export default function TodoList() {
     );
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    showSnackbar('Done successfully');
   };
 
   return (

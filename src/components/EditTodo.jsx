@@ -14,7 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { TodoContext } from "../contexts/TodoContext";
 
 export default function EditTodo({ todo, onClose }) {
-  const { todos, setTodos } = useContext(TodoContext);
+  const { todos, setTodos, showSnackbar } = useContext(TodoContext);
   const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
@@ -30,8 +30,9 @@ export default function EditTodo({ todo, onClose }) {
     setTodos(
       todos.map((t) => (t.id === todo.id ? { ...t, name: editedText } : t))
     );
-    localStorage.setItem("todos", todos);
+    localStorage.setItem("todos", JSON.stringify(todos));
     onClose();
+    showSnackbar('Updated successfully');
   };
 
   return (
