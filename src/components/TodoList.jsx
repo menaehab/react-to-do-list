@@ -1,4 +1,4 @@
-import { useContext, useState,useEffect } from "react";
+import { useContext, useState, useMemo } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import {
   List,
@@ -18,15 +18,23 @@ import { TodoContext } from "../contexts/TodoContext";
 export default function TodoList() {
   const [alignment, setAlignment] = useState("all");
 
-  const [filteredTodos, setFilteredTodos] = useState([]);
-
   const handleChange = (e, newAlignment) => {
     setAlignment(newAlignment);
   };
 
   const { todos, setTodos } = useContext(TodoContext);
-
   const [editingTodo, setEditingTodo] = useState(null);
+
+  const filteredTodos = useMemo(() => {
+    switch (alignment) {
+      case 'completed':
+        return todos.filter(todo => todo.completed);
+      case 'uncompleted':
+        return todos.filter(todo => !todo.completed);
+      default:
+        return todos;
+    }
+  }, [alignment, todos]);
 
   const handleEditClick = (todo) => {
     setEditingTodo(todo);
@@ -38,24 +46,16 @@ export default function TodoList() {
 
   const deleteTodo = (todo) => {
     setTodos(todos.filter((value) => value.id !== todo.id));
-    localStorage.setItem("todos", todos);
+    localStorage.setItem("todos", JSON.stringify(todos));
   };
 
   const doneTodo = (todo) => {
-    setTodos(todos.map((value) => value.id === todo.id ? {...value, completed: !value.completed} : value));  
-    localStorage.setItem("todos", todos);
+    const updatedTodos = todos.map((value) => 
+      value.id === todo.id ? {...value, completed: !value.completed} : value
+    );
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
-
-
-  useEffect(() => {
-    if (alignment === "all") {
-      setFilteredTodos(todos);
-    } else if (alignment === "completed") {
-      setFilteredTodos(todos.filter((todo) => todo.completed));
-    } else if (alignment === "uncompleted") {
-      setFilteredTodos(todos.filter((todo) => !todo.completed));
-    }
-  }, [alignment, todos]);
 
   return (
     <>
